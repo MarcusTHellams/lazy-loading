@@ -1,5 +1,5 @@
 import { useIntersection } from '@mantine/hooks';
-import { type InfiniteData, useInfiniteQuery } from '@tanstack/react-query';
+import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
 import { useEffect, useRef } from 'react';
 
@@ -13,6 +13,7 @@ interface Post {
 let PAGE_LIMIT = 5;
 
 function App() {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { data, fetchNextPage, isFetchingNextPage } = useInfiniteQuery<
     Post[],
     Error
