@@ -67,7 +67,7 @@ function App() {
         <h1>Posts</h1>
         {data ? (
           <>
-            <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm list-none">
+            <ul className="not-prose pl-0 divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm list-none">
               {_pages?.map((post, index) => {
                 return (
                   <li
