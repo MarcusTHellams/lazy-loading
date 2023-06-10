@@ -1,7 +1,7 @@
 import { useIntersection } from '@mantine/hooks';
 import { useInfiniteQuery } from '@tanstack/react-query';
 import axios from 'axios';
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 
 interface Post {
   userId: number;
@@ -10,7 +10,7 @@ interface Post {
   body: string;
 }
 
-let PAGE_LIMIT = 5;
+let PAGE = 1;
 
 function App() {
   // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -21,9 +21,11 @@ function App() {
     refetchOnWindowFocus: false,
     retry: false,
     queryKey: ['posts'],
-    async queryFn({ pageParam = PAGE_LIMIT }) {
+    async queryFn({ pageParam = PAGE }) {
       return axios
-        .get(`https://jsonplaceholder.typicode.com/posts?_limit=${pageParam}`)
+        .get(
+          `https://jsonplaceholder.typicode.com/posts?_limit=5&_page=${pageParam}`
+        )
         .then(({ data }) => data);
     },
     // getNextPageParam(_, allPages) {
@@ -48,12 +50,16 @@ function App() {
 
   useEffect(() => {
     if (entry && entry.isIntersecting) {
-      PAGE_LIMIT += 5;
-      if (PAGE_LIMIT < 101) {
-        fetchNextPage({ pageParam: PAGE_LIMIT });
+      PAGE += 1;
+      if (PAGE < 21) {
+        fetchNextPage({ pageParam: PAGE });
       }
     }
   }, [entry, fetchNextPage]);
+
+  const _pages = useMemo(() => {
+    return data?.pages.flatMap((page) => page);
+  }, [data?.pages]);
 
   return (
     <div className="container mx-auto mt-16">
@@ -62,11 +68,11 @@ function App() {
         {data ? (
           <>
             <ul className="divide-y divide-gray-200 rounded-xl border border-gray-200 shadow-sm list-none">
-              {data.pages[data.pages.length - 1]?.map((post, index) => {
+              {_pages?.map((post, index) => {
                 return (
                   <li
                     ref={
-                      index === data.pages[data.pages.length - 1].length - 1
+                      index === _pages.length- 1
                         ? ref
                         : undefined
                     }
